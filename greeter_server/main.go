@@ -37,13 +37,22 @@ var (
 
 // server is used to implement helloworld.GreeterServer.
 type server struct {
-	pb.UnimplementedGreeterServer
+	pb.UnimplementedLoggerServer
 }
 
 // SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+func (s *server) Log(ctx context.Context, in *pb.LogRequest) (*pb.LogReply, error) {
+	log.Printf("Log Received at: [%v] \nLevel: [%v] \nMessage: [%v] \nDuration: [%v] \nMethod: [%v] \nProtocol: [%v] \nEnabled: [%v]",
+		in.GetDateSent(),
+		in.GetLevel(),
+		in.GetMessage(),
+		in.GetDuration(),
+		in.GetMethod(),
+		in.GetProtocol(),
+		in.GetEnabled())
+	//Here he would maybe add to Queue
+	//We just log for now
+	return &pb.LogReply{LogReply: "Message Received: " + in.GetMessage(), Ok: true}, nil
 }
 
 func main() {
@@ -53,7 +62,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
+	pb.RegisterLoggerServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
