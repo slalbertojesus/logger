@@ -19,7 +19,12 @@ import "google/protobuf/timestamp.proto";
 option go_package = "./helloworld";
 
 //To Run
+//GO server go client
 //protoc --go_out=. --go-grpc_out=. helloworld.proto
+
+//GO server js client
+//protoc --go_out=. --js_out=import_style=commonjs:. --go-grpc_out=. --grpc-web_out=import_style=commonjs,mode=grpcwebtext:. helloworld.proto
+
 // To version it 
 //option go_package = ".;v1";
 
